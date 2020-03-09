@@ -1,0 +1,51 @@
+{
+  "name": "netmapper",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "type-check": "tsc --noEmit",
+    "type-check:watch": "npm run type-check -- --watch",
+    "build": "npm run build:types && npm run build:js",
+    "build:types": "tsc --emitDeclarationOnly",
+    "build:js": "babel src --out-dir lib --extensions \".ts,.tsx\" --source-maps inline",
+    "test": "jest"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@hapi/joi": "^17.0.2",
+    "crypto": "^1.0.1",
+    "date-fns": "^1.30.1",
+    "dotenv": "^7.0.0",
+    "faker": "^4.1.0",
+    "ip-address": "^6.2.0",
+    "node-schedule": "^1.3.2",
+    "telnet-client": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/faker": "^4.1.9",
+    "@types/ip-address": "^5.8.2",
+    "@types/jest": "^24.9.1",
+    "@types/json-schema": "^7.0.4",
+    "@types/node": "^13.1.5",
+    "@typescript-eslint/eslint-plugin": "^2.15.0",
+    "@typescript-eslint/parser": "^2.15.0",
+    "babel-eslint": "^10.0.3",
+    "babel-jest": "^25.1.0",
+    "eslint": "^6.8.0",
+    "eslint-config-prettier": "^6.9.0",
+    "eslint-config-semistandard": "^15.0.0",
+    "eslint-config-standard": "^13.0.1",
+    "eslint-plugin-import": "^2.19.1",
+    "eslint-plugin-jest": "^23.6.0",
+    "eslint-plugin-node": "^11.0.0",
+    "eslint-plugin-prettier": "^3.1.2",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.1",
+    "jest": "^25.1.0",
+    "prettier": "1.19.1",
+    "ts-jest": "^25.0.0",
+    "typescript": "^3.7.4"
+  }
+}
