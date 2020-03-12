@@ -11,7 +11,8 @@ export default function buildMakeDevice({
     createdBy,
     createdAt = new Date(),
     updatedAt = new Date(),
-    locationIp
+    locationIp,
+    locationPort
   }: {
     ip: string;
     mac: string;
@@ -19,6 +20,7 @@ export default function buildMakeDevice({
     createdAt: Date;
     updatedAt: Date;
     locationIp: string;
+    locationPort: string;
   }): IDevice {
     if (!isValidIp(ip)) {
       throw new Error('ip must be valid ip address');
@@ -34,7 +36,8 @@ export default function buildMakeDevice({
       getCreatedBy: (): number => createdBy,
       getCreatedAt: (): Date => createdAt,
       getUpdatedAt: (): Date => updatedAt,
-      getLocationIp: (): string => locationIp
+      getLocationIp: (): string => locationIp,
+      getLocationPort: (): string => locationPort
     });
   };
 }
