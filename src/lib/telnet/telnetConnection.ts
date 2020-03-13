@@ -3,9 +3,9 @@ import {
   ISetTerminalLength,
   TelnetClient,
   ITelnet,
-  IGetConnectedDevice,
-  ITableParser
-} from '../../services/Device/telnetConnection.interface';
+  IGetMacAddressTable,
+  IMacAddressTableData
+} from './telnetConnection.interface';
 
 export const makeCreateConnection = function(
   Telnet: TelnetClient,
@@ -29,21 +29,21 @@ export const makeSetTerminalLength = function(length = 0): ISetTerminalLength {
   };
 };
 
-export const makeGetConnectedDevice = function(
-  tableParser: ITableParser
-): IGetConnectedDevice {
-  return async function getConnectedMacAddress(
+export const makeGetMacAddressTable = function(
+  tableParser
+): IGetMacAddressTable {
+  return async function getMacAddressTable(
     telnet: ITelnet
-  ): Promise<object[]> {
+  ): Promise<IMacAddressTableData[]> {
     // Execute command in telnet connection
     const rawResult = await telnet.exec('show mac address-table\r\n');
 
-    return tableParser.parse(rawResult).slice(1);
+    return tableParser(rawResult).slice(1);
   };
 };
 
 export default {
   makeCreateConnection,
   makeSetTerminalLength,
-  makeGetConnectedDevice
+  makeGetMacAddressTable
 };

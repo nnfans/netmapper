@@ -3,10 +3,6 @@ export interface ITelnet {
   exec(command: string): Promise<string>;
 }
 
-export interface ITableParser {
-  parse(text: string): object[];
-}
-
 export interface TelnetClient {
   new (): ITelnet;
 }
@@ -19,6 +15,13 @@ export interface ISetTerminalLength {
   (connection: ITelnet): Promise<ITelnet>;
 }
 
-export interface IGetConnectedDevice {
-  (connection: ITelnet): Promise<object[]>;
+export interface IMacAddressTableData {
+  Vlan: string;
+  Mac: string;
+  Type: string;
+  Ports: string;
+}
+
+export interface IGetMacAddressTable {
+  (connection: ITelnet): Promise<IMacAddressTableData[]>;
 }

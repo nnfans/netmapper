@@ -5,24 +5,30 @@ describe('Device', function() {
   describe('makeDevice constructor', function() {
     let makeDevice;
     let isValidIp: jest.Mock;
+    let isValidMac: jest.Mock;
     beforeEach(function() {
       isValidIp = jest.fn().mockImplementation(ip => {
         return ip !== 'invalid';
       });
-      makeDevice = buildMakeDevice({ isValidIp });
+      isValidMac = jest.fn().mockImplementation(ip => {
+        return ip !== 'invalid';
+      });
+      makeDevice = buildMakeDevice({ isValidIp, isValidMac });
     });
 
-    it('makeDevice return device', function() {
-      const deviceArg = makeFakeDevice({ ip: 'ip' });
+    it('makeDevice return device as ip and location ip is valid', function() {
+      const deviceArg = makeFakeDevice({ ip: 'valid', locationIp: 'valid' });
       const device = makeDevice(deviceArg);
 
       expect(device).toEqual({
+        isValidIp: expect.any(Function),
         getIp: expect.any(Function),
+        setIp: expect.any(Function),
         getMacAddress: expect.any(Function),
-        getCreatedBy: expect.any(Function),
-        getCreatedAt: expect.any(Function),
-        getUpdatedAt: expect.any(Function),
-        getLocationIp: expect.any(Function)
+        isValidLocationIp: expect.any(Function),
+        getLocationIp: expect.any(Function),
+        setLocationIp: expect.any(Function),
+        getLocationPort: expect.any(Function)
       });
     });
 

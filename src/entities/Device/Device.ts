@@ -1,42 +1,65 @@
-import { IDevice } from './interface';
+import { IDevice } from './Device.interface';
 
 export default function buildMakeDevice({
-  isValidIp
+  isValidIp,
+  isValidMac
 }: {
-  isValidIp: Function;
+  isValidIp: (ip: string) => boolean;
+  isValidMac: (mac: string) => boolean;
 }) {
   return function makeDevice({
     ip,
     mac,
-    createdBy,
-    createdAt = new Date(),
-    updatedAt = new Date(),
     locationIp,
     locationPort
   }: {
     ip: string;
     mac: string;
-    createdBy: number;
-    createdAt: Date;
-    updatedAt: Date;
     locationIp: string;
     locationPort: string;
   }): IDevice {
-    if (!isValidIp(ip)) {
-      throw new Error('ip must be valid ip address');
+    const _isValidIp = function(): boolean {
+      return isValidIp(ip);
+    };
+
+    const isValidLocationIp = function(): boolean {
+      return isValidIp(locationIp);
+    };
+
+    const setIp = function(_ip: string): void {
+      if (!isValidIp(_ip)) {
+        throw new Error('ip must be valid ip address');
+      }
+      ip = _ip;
+    };
+
+    const setLocationIp = function(_locationIp: string): void {
+      if (!isValidIp(_locationIp)) {
+        throw new Error('locationIp must be valid ip address');
+      }
+      locationIp = _locationIp;
+    };
+
+    if (!isValidMac(mac)) {
+      throw new Error('mac must be valid mac address');
     }
 
-    if (!isValidIp(locationIp)) {
-      throw new Error('locationIp must be valid ip address');
+    if (ip) {
+      setIp(ip);
+    }
+
+    if (locationIp) {
+      setLocationIp(locationIp);
     }
 
     return Object.freeze({
-      getIp: (): string => ip,
+      isValidIp: _isValidIp,
+      getIp: (): string => (isValidIp(ip) ? ip : null),
+      setIp,
       getMacAddress: (): string => mac,
-      getCreatedBy: (): number => createdBy,
-      getCreatedAt: (): Date => createdAt,
-      getUpdatedAt: (): Date => updatedAt,
-      getLocationIp: (): string => locationIp,
+      isValidLocationIp,
+      getLocationIp: (): string => (isValidIp(locationIp) ? locationIp : null),
+      setLocationIp,
       getLocationPort: (): string => locationPort
     });
   };

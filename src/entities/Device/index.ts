@@ -1,10 +1,9 @@
-import { isIPv4, isIPv6 } from 'net';
+import { isIPv4 } from 'net';
 import buildMakeDevice from './Device';
 
-function isValidIp(ip): boolean {
-  return isIPv4(ip) || isIPv6(ip);
-}
+const isValidMac = (mac: string): boolean =>
+  !!mac.match(/([0-9a-z]{4}.[0-9a-z]{4}.[0-9a-z]{4})/);
 
-const makeDevice = buildMakeDevice({ isValidIp });
+export const makeDevice = buildMakeDevice({ isValidIp: isIPv4, isValidMac });
 
 export default makeDevice;

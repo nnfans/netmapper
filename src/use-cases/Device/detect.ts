@@ -1,56 +1,49 @@
-import { IDevice } from '../../entities/Device/interface';
+import { IDevice } from '../../entities/Device/Device.interface';
 import makeDevice from '../../entities/Device';
 import {
   ICreateConnection,
   ISetTerminalLength,
-  IGetConnectedMacAddress
-} from '../../services/Device/telnetConnection.interface';
-import { isString } from 'util';
+  IGetMacAddressTable
+} from '../../lib/telnet/telnetConnection.interface';
 
-export default function makeDetectDevices({
+export const makeDetectConnectedDevice = function({
   isValidIp,
   createConnection,
   setTerminalLengthZero,
-  getConnectedMacAddress
+  getMacAddressTable
 }: {
   isValidIp: Function;
   createConnection: ICreateConnection;
   setTerminalLengthZero: ISetTerminalLength;
-  getConnectedMacAddress: IGetConnectedMacAddress;
-}): Function {
-  return async function detectDevices(
-    l3Address: string,
-    l2Addresses: string[]
-  ): Promise<object[]> {
-    // Throw as l3Address is invalid
-    if (!isValidIp(l3Address)) {
-      throw new Error('l3Address must be valid ip address');
-    }
-
-    // Check wheter l2Addresses has invalid ip address
-    const hasInvalidL2Address = l2Addresses.some(
-      address => !isValidIp(address)
-    );
-
-    // Throw as l2Addresses has invalid ip address
-    if (hasInvalidL2Address) {
+  getMacAddressTable: IGetMacAddressTable;
+}) {
+  return async function detectConnectedDevice(
+    l2Address: string
+  ): Promise<IDevice[]> {
+    // Throw as l2Address is an invalid ip address
+    if (!isValidIp(l2Address)) {
       throw new Error('l2Address must be valid ip address');
     }
 
-    const promiseAddress = await l2Addresses.map(async function(address) {
-      const result = await createConnection({ host: address })
-        .then(setTerminalLengthZero)
-        .then(getConnectedMacAddress)
-        .catch(error => error);
+    const result = await createConnection({ host: l2Address })
+      .then(setTerminalLengthZero)
+      .then(getMacAddressTable);
 
-      return result;
-    });
-
-    const addresses = await Promise.all(promiseAddress);
-    const addressesFound = addresses
-      .filter((addr): addr is object[] => typeof addr !== 'string')
-      .reduce((prev, curr) => [...prev, ...curr]);
-
-    return addressesFound;
+    return result
+      .map(function(device) {
+        try {
+          return makeDevice({
+            ip: null,
+            mac: device.Mac,
+            locationIp: l2Address,
+            locationPort: device.Ports
+          });
+        } catch (error) {
+          return null;
+        }
+      })
+      .filter(device => !!device);
   };
-}
+};
+
+export default { makeDetectConnectedDevice };
