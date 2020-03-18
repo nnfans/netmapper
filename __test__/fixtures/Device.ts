@@ -1,7 +1,7 @@
 import * as faker from 'faker';
 
 export default function makeFakeDevice(
-  overrides
+  overrides = {}
 ): {
   ip: string;
   mac: string;

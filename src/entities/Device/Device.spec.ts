@@ -17,7 +17,7 @@ describe('Device', function() {
     });
 
     it('makeDevice return device as ip and location ip is valid', function() {
-      const deviceArg = makeFakeDevice({ ip: 'valid', locationIp: 'valid' });
+      const deviceArg = makeFakeDevice();
       const device = makeDevice(deviceArg);
 
       expect(device).toEqual({

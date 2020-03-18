@@ -19,42 +19,52 @@ const defaultTelnetParameter = {
   execTimeout: 10000
 };
 
-const createConnection = makeCreateConnection(Telnet, defaultTelnetParameter);
 const setTerminalLengthZero = makeSetTerminalLength(0);
 const getMacAddressTable = makeGetMacAddressTable(parser.parse);
 
-const detectConnectedDevice = makeDetectConnectedDevice({
-  isValidIp: isIPv4,
-  createConnection,
-  setTerminalLengthZero,
-  getMacAddressTable
-});
-
-export default {
-  async detectDevices(
-    l2IpAddress: string | string[],
-    l3IpAddress: string | string[]
-  ): Promise<IDevice[]> {
-    if (!Array.isArray(l2IpAddress)) {
-      l2IpAddress = [l2IpAddress];
-    }
-
-    if (!Array.isArray(l3IpAddress)) {
-      l3IpAddress = [l3IpAddress];
-    }
-
-    const connectedDevicesPromises: Promise<IDevice[]> = l2IpAddress
-      .map(detectConnectedDevice)
-      .reduce(function(prev, curr) {
-        return prev.then(resPrev => {
-          return curr.then(function(resCurr) {
-            return [...resPrev, ...resCurr];
-          });
-        });
-      }, Promise.resolve([]));
-
-    const connectedDevices = await connectedDevicesPromises;
-
-    return connectedDevices;
+export const detectDevice = async function(
+  l2: {
+    ipAddress: string | string[];
+    telnetParameter: {};
+  },
+  l3: {
+    ipAddress: string | string[];
+    telnetParameter: {};
   }
+): Promise<IDevice[]> {
+  if (!Array.isArray(l2.ipAddress)) {
+    l2.ipAddress = [l2.ipAddress];
+  }
+
+  if (!Array.isArray(l3.ipAddress)) {
+    l3.ipAddress = [l3.ipAddress];
+  }
+
+  const createL2Connection = makeCreateConnection(Telnet, {
+    ...defaultTelnetParameter,
+    ...l2.telnetParameter
+  });
+
+  const detectConnectedDevice = makeDetectConnectedDevice({
+    isValidIp: isIPv4,
+    createConnection: createL2Connection,
+    setTerminalLengthZero,
+    getMacAddressTable
+  });
+
+  const connectedDevicesPromises: Promise<IDevice[]> = l2.ipAddress
+    .map(detectConnectedDevice)
+    .reduce(function(prev, curr) {
+      return prev.then(resPrev => {
+        return curr.then(function(resCurr) {
+          return [...resPrev, ...resCurr];
+        });
+      });
+    }, Promise.resolve([]));
+
+  const connectedDevices = await connectedDevicesPromises;
+
+  return connectedDevices;
 };
+
+export default { detectDevice };
