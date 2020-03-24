@@ -1,9 +1,4 @@
-import telnetConnection, { makeCreateConnection } from './telnetConnection';
-import {
-  TelnetClient,
-  ITelnet,
-  ICreateConnection
-} from './telnetConnection.interface';
+import { makeCreateConnection } from './telnetConnection';
 
 const defaultTelnetParameter = {
   timeout: 10000,
@@ -17,23 +12,18 @@ const defaultTelnetParameter = {
 
 describe('telnetConnection', function() {
   describe('createConnection', function() {
-    let mockTelnet: TelnetClient;
-    let mockTelnetObject: ITelnet;
-    let createConnection: ICreateConnection;
-    beforeEach(function() {
-      mockTelnetObject = {
-        connect: jest.fn(),
-        exec: jest.fn()
+    it('return telnet object as function call success', async function() {
+      const mockTelnetObject = {
+        connect: jest.fn()
       };
-      mockTelnet = jest.fn().mockReturnValue(mockTelnetObject);
-      createConnection = makeCreateConnection(
+      const mockTelnet = jest.fn().mockReturnValue(mockTelnetObject);
+      const createConnection = makeCreateConnection(
         mockTelnet,
         defaultTelnetParameter
       );
-    });
 
-    it('return telnet object as function call success', async function() {
       const override = {
+        address: '127.0.0.1',
         username: 'testUser',
         password: 'testPassword',
         timeout: 5000
