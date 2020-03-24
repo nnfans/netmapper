@@ -15,13 +15,26 @@ export interface ISetTerminalLength {
   (connection: ITelnet): Promise<ITelnet>;
 }
 
-export interface IMacAddressTableData {
+export interface MacAddressTableData {
   Vlan: string;
   Mac: string;
   Type: string;
   Ports: string;
 }
 
+export interface ArpTableData {
+  Protocol: string;
+  Address: string;
+  Age: string;
+  Hardware: string;
+  Type: string;
+  Interface: string;
+}
+
 export interface IGetMacAddressTable {
-  (connection: ITelnet): Promise<IMacAddressTableData[]>;
+  (connection: ITelnet): Promise<MacAddressTableData[]>;
+}
+
+export interface IGetArpIp {
+  (connection: ITelnet): Promise<ArpTableData[]>;
 }

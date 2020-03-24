@@ -18,14 +18,14 @@ export const makeDetectConnectedDevice = function({
   getMacAddressTable: IGetMacAddressTable;
 }) {
   return async function detectConnectedDevice(
-    l2Address: string
+    address: string
   ): Promise<IDevice[]> {
     // Throw as l2Address is an invalid ip address
-    if (!isValidIp(l2Address)) {
-      throw new Error('l2Address must be valid ip address');
+    if (!isValidIp(address)) {
+      throw new Error('address must be valid ip address');
     }
 
-    const result = await createConnection({ host: l2Address })
+    const result = await createConnection({ host: address })
       .then(setTerminalLengthZero)
       .then(getMacAddressTable);
 
@@ -35,7 +35,7 @@ export const makeDetectConnectedDevice = function({
           return makeDevice({
             ip: null,
             mac: device.Mac,
-            locationIp: l2Address,
+            locationIp: address,
             locationPort: device.Ports
           });
         } catch (error) {
