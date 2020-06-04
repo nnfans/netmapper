@@ -1,3 +1,3 @@
-import DeviceController from './controllers/DeviceController';
+import { detectDevice } from './controllers/DeviceController';
 
-export default { detectDevice: DeviceController.detectDevice };
+export = { detectDevice };

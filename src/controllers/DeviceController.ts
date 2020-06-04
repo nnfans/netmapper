@@ -29,11 +29,11 @@ const getArpIp = makeGetArpIp(parser.parse);
 export const detectDevice = async function(
   l2: {
     ipAddress: string | string[];
-    telnetParameter: {};
+    telnetParameter?: {};
   },
   l3: {
     ipAddress: string | string[];
-    telnetParameter: {};
+    telnetParameter?: {};
   },
   filterPort: string[] = []
 ): Promise<IDevice[]> {
@@ -47,12 +47,12 @@ export const detectDevice = async function(
 
   const createL2Connection = makeCreateConnection(Telnet, {
     ...defaultTelnetParameter,
-    ...l2.telnetParameter
+    ...(l2.telnetParameter || {})
   });
 
   const createL3Connection = makeCreateConnection(Telnet, {
     ...defaultTelnetParameter,
-    ...l3.telnetParameter
+    ...(l3.telnetParameter || {})
   });
 
   const detectConnectedDevice = makeDetectConnectedDevice({
@@ -109,4 +109,4 @@ export const detectDevice = async function(
   return devices;
 };
 
-export default { detectDevice };
+export = { detectDevice };
