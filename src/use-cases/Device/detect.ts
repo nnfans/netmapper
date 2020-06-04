@@ -3,8 +3,10 @@ import makeDevice from '../../entities/Device';
 import {
   ICreateConnection,
   ISetTerminalLength,
-  IGetMacAddressTable
+  IGetMacAddressTable,
+  MacAddressTableData
 } from '../../lib/telnet/telnetConnection.interface';
+import { isArray } from 'util';
 
 export const makeDetectConnectedDevice = function({
   isValidIp,
@@ -25,9 +27,15 @@ export const makeDetectConnectedDevice = function({
       throw new Error('address must be valid ip address');
     }
 
-    const result = await createConnection({ host: address })
+    let result: MacAddressTableData[] = await createConnection({
+      host: address
+    })
       .then(setTerminalLengthZero)
-      .then(getMacAddressTable);
+      .then(getMacAddressTable)
+      .catch(err => {
+        console.dir({ error: err });
+        return [];
+      });
 
     return result
       .map(function(device) {

@@ -24,7 +24,8 @@ export const makeGetArpTable = function({
 
     const result = await createConnection({ host: address })
       .then(setTerminalLengthZero)
-      .then(getArpIp);
+      .then(getArpIp)
+      .catch(() => []);
 
     return result;
   };

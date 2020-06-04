@@ -1,7 +1,6 @@
 import {
   ICreateConnection,
   ISetTerminalLength,
-  TelnetClient,
   ITelnet,
   IGetMacAddressTable,
   MacAddressTableData,
@@ -10,7 +9,7 @@ import {
 } from './telnetConnection.interface';
 
 export const makeCreateConnection = function(
-  Telnet: TelnetClient,
+  Telnet: any,
   defaultParameter
 ): ICreateConnection {
   return async function createConnection(override): Promise<ITelnet> {
