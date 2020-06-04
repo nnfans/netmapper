@@ -16,7 +16,7 @@
     "faker": "^4.1.0",
     "ip-address": "^6.2.0",
     "table-parser": "^1.0.1",
-    "telnet-client": "^1.2.11"
+    "telnet-client": "^1.4.2"
   },
   "devDependencies": {
     "@types/faker": "^4.1.10",
